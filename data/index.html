@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Bloom Device Configuration Portal</title>
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+</head>
+
+<body>
+  <div class="container" style="padding-top:40px;">
+
+    <div class="row">
+
+      <div class="col">
+        <div class="jumbotron">
+          <h1 class="display-4">Bloom Device Config</h1>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+
+      <div class="col">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info"
+              aria-selected="true">Info</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" id="network-tab" data-toggle="tab" href="#network" role="tab"
+              aria-controls="network" aria-selected="false">Network Settings</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+              aria-selected="false">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-header"></div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">Sketch Size: %SKETCH_SIZE%</li>
+                <li class="list-group-item">Free Heap: %FREE_HEAP%</li>
+                <li class="list-group-item">Free PsramL %FREE_PSRAM%</li>
+                <li class="list-group-item"></li>
+                <li class="list-group-item"></li>
+              </ul>
+
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="card-header"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade show active" id="network" role="tabpanel" aria-labelledby="network-tab">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-header">
+                Current Network Settings
+              </div>
+
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">Current IP: %LOCAL_IP%</li>
+                <li class="list-group-item">Gateway IP: %GATEWAY_IP%</li>
+                <li class="list-group-item">Subnet Mask: %SUBNET_MASK%</li>
+                <li class="list-group-item">DNS 1 IP: %DNS_1%</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="col" data-role="content">
+            <div class="card">
+              <div class="card-header">Change Static IP Settings</div>
+              <div class="card-body">
+                <form onsubmit="updateIPConfig()" action="config-update" method="post" id="form" data-ajax="false">
+                  <div data-role="fieldcontain" class="form-group">
+                    <label for="ip">Static IP Address:</label>
+                    <input class="form-control" name="ip" value="%LOCAL_IP%" id="ip" type="text" required
+                      pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
+                    <label for="gw">Gateway IP Address:</label>
+                    <input class="form-control" name="gw" value="%GATEWAY_IP%" id="gw" type="text" required
+                      pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
+                    <label for="sm">Subnet Mask:</label>
+                    <input class="form-control" name="sm" value="%SUBNET_MASK%" id="sm" type="text" required
+                      pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
+                    <label for="dns">DNS IP Address:</label>
+                    <input class="form-control" name="dns" value="%DNS_1%" id="dns" type="text" required
+                      pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
+                  </div>
+                  <div style="text-align:center;">
+                    <input type="submit" id="config-update" class="btn btn-primary" value="Submit button" />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+    integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></<script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+  <script>
+                                                                                                                  $('#myTab network').on('click', function (e) {
+                                                                                                                    e.preventDefault()
+      $(this).tab('show')
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                })
+    $('#myTab info').on('click', function (e) {
+                                                                                                                    e.preventDefault()
+      $(this).tab('show')
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                })
+    $('#myTab contact').on('click', function (e) {
+                                                                                                                    e.preventDefault()
+      $(this).tab('show')
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                })
+    function updateIPConfig() {
+                                                                                                                    alert("Updating IP.  Restarting device and redirecting to new address...");
+                                                                                                              }
+  </script>
+</body>
+
+</html>
