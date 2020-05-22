@@ -6,7 +6,24 @@
 #include <ArduinoJson.h>
 #include "modbus.h"
 
+#include "SparkFun_SCD30_Arduino_Library.h"
+
+#define SCD30_SAMPLE_RATE_MS 2000
+#define MB_UPDATE_RATE_MS 1000
 #define IP_CONFIG_FILE "/ipConfig.txt"
+
+#define CO2_PPM_ATMOSPHERIC 400
+
+typedef struct
+{
+  float temp;
+  float rh;
+  uint16_t co2;
+} scd30_sensor_data_t;
+
+SCD30 scd30;
+
+static scd30_sensor_data_t scd30_data;
 
 /* Web server template processing */
 String processor(const String &var)
@@ -39,6 +56,25 @@ String processor(const String &var)
   {
     return (String)ESP.getFreePsram();
   }
+  if (var == "TEMP")
+  {
+    return (String)((float)mb_holding_regs[0] / 10);
+  }
+  if (var == "RH")
+  {
+    return (String)((float)mb_holding_regs[1] / 10);
+  }
+  if (var == "CO2")
+  {
+    return (String)mb_holding_regs[2];
+  }
+
+  if (var == "TEMP_OFFSET")
+  {
+    return (String)scd30.getTemperatureOffset();
+  }
+
+
   return String();
 }
 
@@ -203,8 +239,45 @@ void WiFiEvent(WiFiEvent_t event)
   }
 }
 
+void taskGetSCD(void *args)
+{
+
+  scd30_sensor_data_t *data = (scd30_sensor_data_t *)args;
+  for (;;)
+  {
+    if (scd30.dataAvailable())
+    {
+      data->rh = scd30.getHumidity();
+      data->temp = scd30.getTemperature();
+      data->co2 = scd30.getCO2();
+      Serial.printf("Temperature is %f°C.\n", data->temp);
+      Serial.printf("CO2 is at %dppm.\n", data->co2);
+    }
+
+    vTaskDelay(SCD30_SAMPLE_RATE_MS / portTICK_PERIOD_MS);
+  }
+
+  vTaskDelete(NULL);
+}
+
+void taskUpdateMB(void *args)
+{
+
+  scd30_sensor_data_t *data = (scd30_sensor_data_t *)args;
+  for (;;)
+  {
+    mb_holding_regs[0] = (uint16_t)(data->temp * 10);
+    mb_holding_regs[1] = (uint16_t)(data->rh * 10);
+    mb_holding_regs[2] = data->co2;
+    vTaskDelay(MB_UPDATE_RATE_MS / portTICK_PERIOD_MS);
+  }
+
+  vTaskDelete(NULL);
+}
+
 void setup()
 {
+  Wire.begin();
   Serial.begin(9600);
 
   WiFi.onEvent(WiFiEvent);
@@ -215,6 +288,11 @@ void setup()
     return;
   }
   //SPIFFS.format();
+
+  // Start SCD30 sensor and turn off ASC
+  scd30.begin();
+  scd30.setAutoSelfCalibration(false);
+
   ETH.begin();
   while (!eth_connected)
   {
@@ -233,7 +311,21 @@ void setup()
   });
   webServer.on("/config-update", HTTP_POST, postConfigUpdate);
 
-  mb_coils[0] = true;
+  webServer.on("/co2cal", HTTP_POST, [](AsyncWebServerRequest *req) {
+    scd30.setForcedRecalibrationFactor(CO2_PPM_ATMOSPHERIC);
+    req->redirect("/");
+    Serial.println("CO2 RECALIBRATED");
+  });
+
+  webServer.on("/tempcal", HTTP_POST, [](AsyncWebServerRequest *req) {
+    AsyncWebParameter *p;
+    if (req->hasParam("tempoffset", true)) {
+      p = req->getParam("tempoffset", true);
+      scd30.setTemperatureOffset(atof(p->value().c_str()));
+      Serial.printf("Set temp calibration factor: %f*C", atof(p->value().c_str()));
+    }
+    req->redirect("/");
+  });
 
   mbServer.begin();
   webServer.begin();
@@ -296,6 +388,10 @@ void setup()
       });
 
   ArduinoOTA.begin();
+
+  // Create main sensor reading task
+  xTaskCreate(&taskGetSCD, "getSCD", 10000, &scd30_data, 1, NULL);
+  xTaskCreate(&taskUpdateMB, "updateMB", 10000, &scd30_data, 1, NULL);
 };
 
 void loop()

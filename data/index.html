@@ -45,12 +45,12 @@
         <div class="row">
           <div class="col">
             <div class="card">
-              <div class="card-header"></div>
+              <div class="card-header">Current sensor values</div>
               <ul class="list-group list-group-flush">
-                <li class="list-group-item">Sketch Size: %SKETCH_SIZE%</li>
-                <li class="list-group-item">Free Heap: %FREE_HEAP%</li>
-                <li class="list-group-item">Free Psram: %FREE_PSRAM%</li>
-                <li class="list-group-item"></li>
+                <li class="list-group-item">Temperature: %TEMP%&deg;C</li>
+                <li class="list-group-item">Relative Humidity: %RH%%%</li>
+                <li class="list-group-item">CO2: %CO2%ppm</li>
+                <li class="list-group-item">Temperature Offset:-%TEMP_OFFSET%&deg;C</li>
                 <li class="list-group-item"></li>
               </ul>
 
@@ -58,7 +58,21 @@
           </div>
           <div class="col">
             <div class="card">
-              <div class="card-header"></div>
+              <div class="card-header">Calibration</div>
+              <div class="card-body">
+                <form action="co2cal" method="POST">
+                  <input type="submit" onclick="return confirm('Are you sure?')" id="co2-cal" class="btn btn-primary" value="Recalibrate CO2 (to 400ppm)">
+                </form>
+                <form action="tempcal" method="POST">
+                  <label for="tempoffset">Temperature Offset:</label>
+                  <input type="range" class="custom-range" min="0" max="5" step="0.1" value = "%TEMP_OFFSET%" name="tempoffset" id="tempOffsetSlider"> 
+                  <div id="tempoffsetval"></div>
+                  <div>
+                    <input type="submit" onclick="return confirm('Are you sure?')" id="temp-cal" class="btn btn-primary" value="Set temperature Offset">
+                  </div>
+                  
+                </form>
+              </div>
             </div>
           </div>
         </div>
@@ -100,7 +114,7 @@
                       pattern="((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$">
                   </div>
                   <div style="text-align:center;">
-                    <input type="submit" id="config-update" class="btn btn-primary" value="Submit button" />
+                    <input type="submit" onclick="return confirm('Are you sure?')" id="config-update" class="btn btn-primary" value="Submit button" />
                   </div>
                 </form>
               </div>
@@ -114,26 +128,35 @@
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
     integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
-    integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></<script
-        src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-        crossorigin="anonymous"></script>
+    integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
   <script>
-                                                                                                                  $('#myTab network').on('click', function (e) {
-     // TESTING GIT STUFF                                                                                                               e.preventDefault()
-      $(this).tab('show')
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                })
-    $('#myTab info').on('click', function (e) {
-                                                                                                                    e.preventDefault()
-      $(this).tab('show')
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                })
-    $('#myTab contact').on('click', function (e) {
-                                                                                                                    e.preventDefault()
-      $(this).tab('show')
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                })
-    function updateIPConfig() {
-                                                                                                                    alert("Updating IP.  Restarting device and redirecting to new address...");
-                                                                                                              }
+                
+  $('#myTab network').on('click', function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+  });
+
+  $('#myTab info').on('click', function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+  });
+
+  $('#myTab contact').on('click', function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+  });
+
+  $(window).on("load",function() {
+    $('#tempoffsetval').html("-" + $('#tempOffsetSlider').val() +"&deg;C");
+  });
+      
+  $('#tempOffsetSlider').on('input', function() {
+    $('#tempoffsetval').html("-" + $(this).val() + "&deg;C");
+  });
+
+  function updateIPConfig() {
+    alert("Updating IP.  Restarting device and redirecting to new address...");
+  }
   </script>
 </body>
 
