@@ -35,7 +35,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-              aria-selected="false">Contact</a>
+              aria-selected="false">Commissioning</a>
           </li>
         </ul>
       </div>
@@ -61,7 +61,12 @@
               <div class="card-header">Calibration</div>
               <div class="card-body">
                 <form action="co2cal" method="POST">
-                  <input type="submit" onclick="return confirm('Are you sure?')" id="co2-cal" class="btn btn-primary" value="Recalibrate CO2 (to 400ppm)">
+                  <label for="co2calval">CO2 Calibration Value:</label>
+                  <input type="range" class="custom-range" min="400" max="2000" step="1" value = "%CO2%" name="co2calval" id="co2calslider"> 
+                  <div id="co2calvaldisplay"></div>
+                  <div>
+                    <input type="submit" onclick="return confirm('Are you sure?')" id="co2-cal" class="btn btn-primary" value="Recalibrate CO2 to selected value">
+                  </div>    
                 </form>
                 <form action="tempcal" method="POST">
                   <label for="tempoffset">Temperature Offset:</label>
@@ -122,7 +127,7 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Sensor info</div>
+      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">Future Comissioning Process</div>
     </div>
   </div>
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -148,10 +153,15 @@
 
   $(window).on("load",function() {
     $('#tempoffsetval').html("-" + $('#tempOffsetSlider').val() +"&deg;C");
+    $('#co2calvaldisplay').html($('#co2calslider').val() + " ppm");
   });
       
   $('#tempOffsetSlider').on('input', function() {
     $('#tempoffsetval').html("-" + $(this).val() + "&deg;C");
+  });
+
+  $('#co2calslider').on('input', function() {
+    $('#co2calvaldisplay').html($(this).val() + " ppm");
   });
 
   function updateIPConfig() {

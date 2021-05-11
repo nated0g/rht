@@ -1,0 +1,21 @@
+
+# 2021-04-30 10:53:06.464005
++client.connect
+
+# 2021-04-30 10:53:23.260443
++client.read_holding_registers address=3 count=1
+
+# 2021-04-30 10:53:28.536753
++client.read_holding_registers address=2 count=1
+
+# 2021-04-30 10:53:32.787167
++client.read_holding_registers address=1 count=1
+
+# 2021-04-30 10:53:35.646701
++client.read_holding_registers address=0 count=1
+
+# 2021-04-30 10:53:39.913972
++client.read_holding_registers address=3 count=1
+
+# 2021-04-30 11:02:12.552548
++exit
