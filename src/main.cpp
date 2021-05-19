@@ -5,33 +5,17 @@
 #include <ArduinoOTA.h>
 #include <ArduinoJson.h>
 #include "modbus.h"
-<<<<<<< HEAD
 #include <SPI.h>
-=======
-#include <RunningAverage.h>
->>>>>>> 02f2fac4b8b645091c7bedf03915af9216b23a4a
 
 #include "SparkFun_SCD30_Arduino_Library.h"
 #include "Adafruit_ADS1X15.h"
 
 #define SCD30_SAMPLE_RATE_MS 2000
-<<<<<<< HEAD
 #define ADC_SAMPLE_RATE_MS 5000
 #define PAR_SENSOR_CAL_FACTOR 1.6f
 #define MB_UPDATE_RATE_MS 1000
 #define IP_CONFIG_FILE "/ipConfig.txt"
 
-=======
-#define PAR_SAMPLE_RATE_MS 250
-
-#define MB_UPDATE_RATE_MS 1000
-#define IP_CONFIG_FILE "/ipConfig.txt"
-
-#define CO2_PPM_ATMOSPHERIC 400
-
-#define PAR_SENSOR_PIN 35
-
->>>>>>> 02f2fac4b8b645091c7bedf03915af9216b23a4a
 typedef struct
 {
   float temp;
@@ -43,11 +27,7 @@ typedef struct
 uint16_t par_reading;
 
 SCD30 scd30;
-<<<<<<< HEAD
 Adafruit_ADS1015 ads;
-=======
-RunningAverage parAvg(25);
->>>>>>> 02f2fac4b8b645091c7bedf03915af9216b23a4a
 
 static scd30_sensor_data_t scd30_data;
 
@@ -394,12 +374,8 @@ void setup()
 
   webServer.on("/co2cal", HTTP_POST, [](AsyncWebServerRequest *req) {
     AsyncWebParameter *p;
-<<<<<<< HEAD
     if (req->hasParam("co2calval", true))
     {
-=======
-    if (req->hasParam("co2calval", true)) {
->>>>>>> 02f2fac4b8b645091c7bedf03915af9216b23a4a
       p = req->getParam("co2calval", true);
       scd30.setForcedRecalibrationFactor(atoi(p->value().c_str()));
     }
@@ -483,11 +459,7 @@ void setup()
 
   // Create main sensor reading task
   xTaskCreate(&taskGetSCD, "getSCD", 10000, &scd30_data, 1, NULL);
-<<<<<<< HEAD
   xTaskCreate(&taskGetPar, "getPar", 10000, NULL, 1, NULL);
-=======
-  xTaskCreate(&taskGetPAR, "getPar", 10000, &scd30_data, 1, NULL);
->>>>>>> 02f2fac4b8b645091c7bedf03915af9216b23a4a
   xTaskCreate(&taskUpdateMB, "updateMB", 10000, &scd30_data, 1, NULL);
 };
 
