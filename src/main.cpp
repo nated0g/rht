@@ -5,14 +5,16 @@
 #include <ArduinoOTA.h>
 #include <ArduinoJson.h>
 #include "modbus.h"
+#include <SPI.h>
 
 #include "SparkFun_SCD30_Arduino_Library.h"
+#include "Adafruit_ADS1X15.h"
 
 #define SCD30_SAMPLE_RATE_MS 2000
+#define ADC_SAMPLE_RATE_MS 5000
+#define PAR_SENSOR_CAL_FACTOR 1.6f
 #define MB_UPDATE_RATE_MS 1000
 #define IP_CONFIG_FILE "/ipConfig.txt"
-
-#define CO2_PPM_ATMOSPHERIC 400
 
 typedef struct
 {
@@ -21,7 +23,10 @@ typedef struct
   uint16_t co2;
 } scd30_sensor_data_t;
 
+uint16_t par_reading;
+
 SCD30 scd30;
+Adafruit_ADS1015 ads;
 
 static scd30_sensor_data_t scd30_data;
 
@@ -68,12 +73,15 @@ String processor(const String &var)
   {
     return (String)mb_holding_regs[2];
   }
+  if (var == "PAR")
+  {
+    return (String)mb_holding_regs[3];
+  }
 
   if (var == "TEMP_OFFSET")
   {
     return (String)scd30.getTemperatureOffset();
   }
-
 
   return String();
 }
@@ -239,6 +247,36 @@ void WiFiEvent(WiFiEvent_t event)
   }
 }
 
+void taskGetPar(void *args)
+{
+
+  ads.begin();
+  ads.setGain(GAIN_ONE);
+  int16_t adc0;
+  float volts0;
+  uint16_t par;
+  for (;;)
+  {
+    Wire.beginTransmission(0x48);
+    byte error = Wire.endTransmission();
+    Serial.printf("Attempting ADC Reading...");
+    if (error == 0)
+    {
+      Serial.printf(" SUCCESS.\n");
+      adc0 = ads.readADC_SingleEnded(0);
+      volts0 = ads.computeVolts(adc0);
+      par = (uint16_t)(volts0 * 1000 * 1.6);
+      if (par > 4000)
+        par = 0;
+      mb_holding_regs[3] = par;
+      Serial.printf("PAR is %d umol", par);
+    }
+    Serial.printf("\n", par);
+    vTaskDelay(ADC_SAMPLE_RATE_MS / portTICK_PERIOD_MS);
+  }
+  vTaskDelete(NULL);
+}
+
 void taskGetSCD(void *args)
 {
 
@@ -312,14 +350,20 @@ void setup()
   webServer.on("/config-update", HTTP_POST, postConfigUpdate);
 
   webServer.on("/co2cal", HTTP_POST, [](AsyncWebServerRequest *req) {
-    scd30.setForcedRecalibrationFactor(CO2_PPM_ATMOSPHERIC);
+    AsyncWebParameter *p;
+    if (req->hasParam("co2calval", true))
+    {
+      p = req->getParam("co2calval", true);
+      scd30.setForcedRecalibrationFactor(atoi(p->value().c_str()));
+    }
     req->redirect("/");
     Serial.println("CO2 RECALIBRATED");
   });
 
   webServer.on("/tempcal", HTTP_POST, [](AsyncWebServerRequest *req) {
     AsyncWebParameter *p;
-    if (req->hasParam("tempoffset", true)) {
+    if (req->hasParam("tempoffset", true))
+    {
       p = req->getParam("tempoffset", true);
       scd30.setTemperatureOffset(atof(p->value().c_str()));
       Serial.printf("Set temp calibration factor: %f*C", atof(p->value().c_str()));
@@ -391,6 +435,7 @@ void setup()
 
   // Create main sensor reading task
   xTaskCreate(&taskGetSCD, "getSCD", 10000, &scd30_data, 1, NULL);
+  xTaskCreate(&taskGetPar, "getPar", 10000, NULL, 1, NULL);
   xTaskCreate(&taskUpdateMB, "updateMB", 10000, &scd30_data, 1, NULL);
 };
 

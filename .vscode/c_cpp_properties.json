@@ -1,23 +1,26 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
 {
     "configurations": [
         {
-            "name": "!!! WARNING !!! AUTO-GENERATED FILE, PLEASE DO NOT MODIFY IT AND USE https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags"
-        },
-        {
-            "name": "Linux",
+            "name": "PlatformIO",
             "includePath": [
                 "/home/nated0g/dev/Bloom/iris/rhtc2/include",
                 "/home/nated0g/dev/Bloom/iris/rhtc2/src",
                 "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src",
                 "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/ESP Async WebServer_ID306/src",
                 "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
-                "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/ESPAsyncTCP_ID305/src",
                 "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/AsyncTCP_ID1826/src",
                 "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                 "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/ESPmDNS/src",
                 "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                 "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/ArduinoJson_ID64/src",
+                "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/Adafruit ADS1X15",
+                "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/Adafruit BusIO",
                 "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/SparkFun_SCD30_Arduino_Library_ID5449/src",
                 "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
                 "/home/nated0g/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/config",
@@ -108,7 +111,6 @@
                     "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/SPIFFS/src",
                     "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/ESP Async WebServer_ID306/src",
                     "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/FS/src",
-                    "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/ESPAsyncTCP_ID305/src",
                     "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/libdeps/esp32-poe/AsyncTCP_ID1826/src",
                     "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/ArduinoOTA/src",
                     "/home/nated0g/.platformio/packages/framework-arduinoespressif32/libraries/ESPmDNS/src",
@@ -199,7 +201,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=40200",
+                "PLATFORMIO=50101",
                 "ARDUINO_ESP32_POE",
                 "ESP32",
                 "ESP_PLATFORM",
@@ -212,7 +214,6 @@
                 "ARDUINO_BOARD=\"OLIMEX ESP32-PoE\"",
                 ""
             ],
-            "intelliSenseMode": "clang-x64",
             "cStandard": "c99",
             "cppStandard": "c++11",
             "compilerPath": "/home/nated0g/.platformio/packages/toolchain-xtensa32/bin/xtensa-esp32-elf-gcc",
