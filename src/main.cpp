@@ -8,7 +8,7 @@
 #include <SPI.h>
 
 #include "SparkFun_SCD30_Arduino_Library.h"
-#include "Adafruit_ADS1X15.h"
+//#include "Adafruit_ADS1X15.h"
 
 #define SCD30_SAMPLE_RATE_MS 2000
 #define ADC_SAMPLE_RATE_MS 5000
@@ -21,13 +21,12 @@ typedef struct
   float temp;
   float rh;
   uint16_t co2;
-  uint16_t par;
+  //uint16_t par;
 } scd30_sensor_data_t;
 
-uint16_t par_reading;
 
 SCD30 scd30;
-Adafruit_ADS1015 ads;
+//Adafruit_ADS1015 ads;
 
 static scd30_sensor_data_t scd30_data;
 
@@ -74,11 +73,12 @@ String processor(const String &var)
   {
     return (String)mb_holding_regs[2];
   }
+  /*
   if (var == "PAR")
   {
     return (String)mb_holding_regs[3];
   }
-
+*/
   if (var == "TEMP_OFFSET")
   {
     return (String)scd30.getTemperatureOffset();
@@ -247,36 +247,28 @@ void WiFiEvent(WiFiEvent_t event)
     break;
   }
 }
-
+/*
 void taskGetPar(void *args)
 {
-
   ads.begin();
   ads.setGain(GAIN_ONE);
   int16_t adc0;
   float volts0;
   uint16_t par;
+  scd30_sensor_data_t *data = (scd30_sensor_data_t *)args;
   for (;;)
   {
-    Wire.beginTransmission(0x48);
-    byte error = Wire.endTransmission();
-    Serial.printf("Attempting ADC Reading...");
-    if (error == 0)
-    {
-      Serial.printf(" SUCCESS.\n");
       adc0 = ads.readADC_SingleEnded(0);
       volts0 = ads.computeVolts(adc0);
       par = (uint16_t)(volts0 * 1000 * 1.6);
       if (par > 4000)
         par = 0;
-      mb_holding_regs[3] = par;
-      Serial.printf("PAR is %d umol", par);
-    }
-    Serial.printf("\n", par);
+      data->par = par;
     vTaskDelay(ADC_SAMPLE_RATE_MS / portTICK_PERIOD_MS);
   }
   vTaskDelete(NULL);
 }
+*/
 
 void taskGetSCD(void *args)
 {
@@ -299,27 +291,6 @@ void taskGetSCD(void *args)
   vTaskDelete(NULL);
 }
 
-void taskGetPAR(void *args)
-{
-  scd30_sensor_data_t *data = (scd30_sensor_data_t *)args;
-  for (;;)
-  {
-    uint16_t parRaw = analogRead(PAR_SENSOR_PIN);
-    uint16_t parVal = (uint32_t)(parRaw * 1289) / 1000;
-    parAvg.addValue(parVal);
-    uint16_t par = (uint16_t)(parAvg.getAverage() + 0.5f);
-    data->par = par;
-
-    vTaskDelay(PAR_SAMPLE_RATE_MS / portTICK_PERIOD_MS);
-  }
-
-  vTaskDelete(NULL);
-  // 1.24mv / pt
-  // 1.6umol / mv
-  // Reading * 1.24 * 1.6 = par
-  // 1.289 / pt
-}
-
 void taskUpdateMB(void *args)
 {
 
@@ -329,7 +300,7 @@ void taskUpdateMB(void *args)
     mb_holding_regs[0] = (uint16_t)(data->temp * 10);
     mb_holding_regs[1] = (uint16_t)(data->rh * 10);
     mb_holding_regs[2] = data->co2;
-    mb_holding_regs[3] = data->par;
+    //mb_holding_regs[3] = data->par;
     vTaskDelay(MB_UPDATE_RATE_MS / portTICK_PERIOD_MS);
   }
 
@@ -459,7 +430,7 @@ void setup()
 
   // Create main sensor reading task
   xTaskCreate(&taskGetSCD, "getSCD", 10000, &scd30_data, 1, NULL);
-  xTaskCreate(&taskGetPar, "getPar", 10000, NULL, 1, NULL);
+  //xTaskCreate(&taskGetPar, "getPar", 10000, NULL, 1, NULL);
   xTaskCreate(&taskUpdateMB, "updateMB", 10000, &scd30_data, 1, NULL);
 };
 

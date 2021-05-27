@@ -12,9 +12,9 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/build/esp32-poe/firmware.elf",
+            "executable": "C:/Users/Admin_P51/Documents/GitHub/rhtc2/.pio/build/esp32-poe/firmware.elf",
             "projectEnvName": "esp32-poe",
-            "toolchainBinDir": "/home/nated0g/.platformio/packages/toolchain-xtensa32/bin",
+            "toolchainBinDir": "C:/Users/Admin_P51/.platformio/packages/toolchain-xtensa32/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "preLaunchTask": {
                 "type": "PlatformIO",
@@ -25,9 +25,9 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "/home/nated0g/dev/Bloom/iris/rhtc2/.pio/build/esp32-poe/firmware.elf",
+            "executable": "C:/Users/Admin_P51/Documents/GitHub/rhtc2/.pio/build/esp32-poe/firmware.elf",
             "projectEnvName": "esp32-poe",
-            "toolchainBinDir": "/home/nated0g/.platformio/packages/toolchain-xtensa32/bin",
+            "toolchainBinDir": "C:/Users/Admin_P51/.platformio/packages/toolchain-xtensa32/bin",
             "internalConsoleOptions": "openOnSessionStart"
         }
     ]
