@@ -26,11 +26,11 @@
       <div class="col">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
           <li class="nav-item">
-            <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info"
+            <a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info"
               aria-selected="true">Info</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" id="network-tab" data-toggle="tab" href="#network" role="tab"
+            <a class="nav-link" id="network-tab" data-toggle="tab" href="#network" role="tab"
               aria-controls="network" aria-selected="false">Network Settings</a>
           </li>
           <li class="nav-item">
@@ -41,7 +41,7 @@
       </div>
     </div>
     <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+      <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
         <div class="row">
           <div class="col">
             <div class="card">
@@ -49,10 +49,6 @@
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">Temperature: %TEMP%&deg;C</li>
                 <li class="list-group-item">Relative Humidity: %RH%%%</li>
-                <li class="list-group-item">CO2: %CO2%ppm</li>
-
-                <li class="list-group-item">PAR: %PAR% &mu;mol m<sup>-1</sup>s<sup>-1</sup></li>
-                <li class="list-group-item">Temperature Offset:-%TEMP_OFFSET%&deg;C</li>
                 <li class="list-group-item"></li>
               </ul>
 
@@ -62,29 +58,13 @@
             <div class="card">
               <div class="card-header">Calibration</div>
               <div class="card-body">
-                <form action="co2cal" method="POST">
-                  <label for="co2calval">CO2 Calibration Value:</label>
-                  <input type="range" class="custom-range" min="400" max="2000" step="1" value = "%CO2%" name="co2calval" id="co2calslider"> 
-                  <div id="co2calvaldisplay"></div>
-                  <div>
-                    <input type="submit" onclick="return confirm('Are you sure?')" id="co2-cal" class="btn btn-primary" value="Recalibrate CO2 to selected value">
-                  </div>    
-                </form>
-                <form action="tempcal" method="POST">
-                  <label for="tempoffset">Temperature Offset:</label>
-                  <input type="range" class="custom-range" min="0" max="5" step="0.1" value = "%TEMP_OFFSET%" name="tempoffset" id="tempOffsetSlider"> 
-                  <div id="tempoffsetval"></div>
-                  <div>
-                    <input type="submit" onclick="return confirm('Are you sure?')" id="temp-cal" class="btn btn-primary" value="Set temperature Offset">
-                  </div>
-                  
-                </form>
+                Future calibration function
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="tab-pane fade show active" id="network" role="tabpanel" aria-labelledby="network-tab">
+      <div class="tab-pane fade" id="network" role="tabpanel" aria-labelledby="network-tab">
         <div class="row">
           <div class="col">
             <div class="card">
